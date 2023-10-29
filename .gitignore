@@ -1,0 +1,5 @@
+# binaries files
+bin/
+
+# visual studio files
+.vs/
