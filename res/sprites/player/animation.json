@@ -1,0 +1,84 @@
+[
+	{
+		"dir": "idle",
+		"count": 5
+	},
+	{
+		"dir": "run",
+		"count": 6
+	},
+	{
+		"dir": "jump",
+		"count": 3,
+		"looped": false
+	},
+	{
+		"dir": "fall",
+		"count": 1
+	},
+	{
+		"dir": "ground",
+		"count": 2
+	},
+	{
+		"dir": "hit",
+		"count": 4
+	},
+	{
+		"dir": "dead hit",
+		"count": 4
+	},
+	{
+		"dir": "dead ground",
+		"count": 4
+	},
+	{
+		"dir": "idle sword",
+		"count": 5
+	},
+	{
+		"dir": "run sword",
+		"count": 6
+	},
+	{
+		"dir": "jump sword",
+		"count": 3,
+		"looped": false
+	},
+	{
+		"dir": "fall sword",
+		"count": 1
+	},
+	{
+		"dir": "ground sword",
+		"count": 2
+	},
+	{
+		"dir": "hit sword",
+		"count": 4
+	},
+	{
+		"dir": "throw sword",
+		"count": 3
+	},
+	{
+		"dir": "attack 1",
+		"count": 3
+	},
+	{
+		"dir": "attack 2",
+		"count": 3
+	},
+	{
+		"dir": "attack 3",
+		"count": 3
+	},
+	{
+		"dir": "air attack 1",
+		"count": 3
+	},
+	{
+		"dir": "air attack 2",
+		"count": 3
+	}
+]

@@ -1,0 +1,8 @@
+{
+	"title": "Treasure Hunters",
+	"screen_width": 900,
+	"screen_height": 600,
+	"fps": 60,
+	"vsync": true,
+	"fullscreen": false
+}
