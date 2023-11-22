@@ -10,9 +10,9 @@ class Player
 public:
 	Player();
 
-	void processEvents(sf::Event& event);
+	void processEvents(const sf::Event& event);
 	void update();
-	void draw(sf::RenderTarget& target) const;
+	void draw(sf::RenderWindow& window) const;
 
 private:
 	AnimationComponent animationComponent;

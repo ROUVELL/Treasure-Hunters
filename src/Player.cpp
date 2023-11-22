@@ -2,13 +2,14 @@
 
 Player::Player()
 {
-	this->animationComponent.load("player");
-	this->animationComponent.setSprite(&this->sprite);
+	animationComponent.load("player");
+	animationComponent.setSprite(&sprite);
 
-	sprite.setScale(2.5f, 2.5f);
+	sprite.setScale(2.0, 2.0);
+	sprite.setPosition(200, 200);
 }
 
-void Player::processEvents(sf::Event& event)
+void Player::processEvents(const sf::Event& event)
 {
 	if (event.type == sf::Event::KeyPressed)
 	{
@@ -55,7 +56,7 @@ void Player::update()
 	animationComponent.update();
 }
 
-void Player::draw(sf::RenderTarget& target) const
+void Player::draw(sf::RenderWindow& window) const
 {
-	target.draw(sprite);
+	window.draw(sprite);
 }

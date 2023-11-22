@@ -1,26 +1,30 @@
 #pragma once
 
-#include "Player.h"
-#include "Settings.h"
+#include "json.hpp"
 
+#include "GameData.h"
 
 class Game
 {
 public:
 	Game();
-	~Game();
 
 	void run();
 
 private:
+	GameData gameData;
+	sf::RenderWindow window;
+	sf::View view;
 
-	sf::RenderWindow* window;
+	nlohmann::json settings;
 
-	Player* player;
-	Settings* settings;
+	std::stack<std::shared_ptr<State>> states;
+	
+	float dt;
+
 
 	void processEvents();
 	void update();
-	void draw() const;
+	void draw();
 };
 

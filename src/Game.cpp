@@ -1,45 +1,58 @@
 #include "Game.h"
 
-Game::Game()
+#include <fstream>
+
+#include "GameState.h"
+#include "Logger.h"
+
+
+Game::Game() : gameData(&window, &view, &states), dt(0.16f)
 {
 	Logger::setLevel(Logger::Level::DEBUG);
 
-	player = new Player;
-	settings = new Settings;
+	std::ifstream file(".\\res\\settings.json");
 
-	std::string title = settings->get<std::string>("title");
-
-	if (settings->get("fullscreen", false))
-		window = new sf::RenderWindow(sf::VideoMode().getDesktopMode(), title, sf::Style::Fullscreen);
-	else
+	if (!file.is_open())
 	{
-		unsigned width = settings->get<unsigned>("screen_width");
-		unsigned height = settings->get<unsigned>("screen_height");
-		window = new sf::RenderWindow(sf::VideoMode(width, height), title);
+		Logger::logError("SETTINGS: Can`t open the settings json file!");
+		return;
 	}
 
-	window->setFramerateLimit(settings->get("fps", 60));
-	window->setVerticalSyncEnabled(settings->get("vsync", true));
-}
+	file >> settings;
 
-Game::~Game()
-{
-	delete player;
-	player = nullptr;
+	file.close();
 
-	delete settings;
-	settings = nullptr;
 
-	delete window;
-	window = nullptr;
+	std::string title = settings["title"];
+
+	if (settings.value("fullscreen", false))
+		window.create(sf::VideoMode().getDesktopMode(), title, sf::Style::Fullscreen);
+	else
+	{
+		unsigned width = settings["screen_width"];
+		unsigned height = settings["screen_height"];
+		window.create(sf::VideoMode(width, height), title);
+	}
+
+	window.setFramerateLimit(settings.value("fps", 60));
+	window.setVerticalSyncEnabled(settings.value("vsync", true));
+	
+	auto [vWidth, vHeight] = window.getSize();
+	view.reset(sf::FloatRect{ 0, 0, static_cast<float>(vWidth), static_cast<float>(vHeight) });
+	//view.setViewport(sf::FloatRect{ 0.25, 0.25, 0.5, 0.5 });
+	window.setView(view);
+
+	states.push(std::make_shared<GameState>(&gameData));
 }
 
 void Game::run()
 {
 	sf::Clock clock;
 
-	while (window->isOpen())
+	while (window.isOpen())
 	{
+		dt = clock.restart().asSeconds();
+
 		processEvents();
 		update();
 		draw();
@@ -50,32 +63,59 @@ void Game::processEvents()
 {
 	sf::Event event;
 
-	while (window->pollEvent(event))
+	while (window.pollEvent(event))
 	{
 		switch (event.type)
 		{
 		case sf::Event::Closed:
-			window->close();
+			window.close();
+			break;
+
+		case sf::Event::Resized:
+			window.setView(sf::View(sf::FloatRect(0.0, 0.0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
+			break;
+
+		case sf::Event::KeyPressed:
+			if (event.key.code == sf::Keyboard::Left)
+			{
+				view.move(-10.0, 0.0);
+				window.setView(view);
+			}
+			if (event.key.code == sf::Keyboard::Right)
+			{
+				view.move(10.0, 0.0);
+				window.setView(view);
+			}
+			if (event.key.code == sf::Keyboard::Up)
+			{
+				view.move(0.0, -10.0);
+				window.setView(view);
+			}
+			if (event.key.code == sf::Keyboard::Down)
+			{
+				view.move(0.0, 10.0);
+				window.setView(view);
+			}
 			break;
 
 		default:
 			break;
 		}
 
-		player->processEvents(event);
+		states.top()->processEvents(event);
 	}
 }
 
 void Game::update()
 {
-	this->player->update();
+	states.top()->update(dt);
 }
 
-void Game::draw() const
+void Game::draw()
 {
-	window->clear(sf::Color{30, 30, 30});
+	window.clear(sf::Color{30, 30, 30});
 
-	player->draw(*window);
+	states.top()->draw(window);
 
-	window->display();
+	window.display();
 }
