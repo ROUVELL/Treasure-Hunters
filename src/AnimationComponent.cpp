@@ -2,7 +2,7 @@
 
 void loadAnimation(const std::string& path, std::vector<sf::Texture>& animation, unsigned count)
 {
-	Logger::logDebug("ANIMATION_LOADER: Start loading " + std::to_string(count) + " animations from '" + path + "'");
+	// Logger::logDebug("ANIMATION_LOADER: Start loading " + std::to_string(count) + " animations from '" + path + "'");
 
 	if (count == 0)
 		Logger::logWarning("ANIMATION_LOADER: Parametr 'count' set to zero!");

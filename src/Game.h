@@ -15,6 +15,8 @@ private:
 	GameData gameData;
 	sf::RenderWindow window;
 	sf::View view;
+	sf::Text fps;
+	sf::Font fpsFont;
 
 	nlohmann::json settings;
 

@@ -36,6 +36,13 @@ Game::Game() : gameData(&window, &view, &states), dt(0.16f)
 
 	window.setFramerateLimit(settings.value("fps", 60));
 	window.setVerticalSyncEnabled(settings.value("vsync", true));
+
+	if (!fpsFont.loadFromFile("./res/fonts/font.ttf"))
+		Logger::logError("GAME: Can`t load fps font!", false);
+
+	fps.setFont(fpsFont);
+	fps.setCharacterSize(16);
+	fps.setFillColor(sf::Color::White);
 	
 	auto [vWidth, vHeight] = window.getSize();
 	view.reset(sf::FloatRect{ 0, 0, static_cast<float>(vWidth), static_cast<float>(vHeight) });
@@ -108,6 +115,14 @@ void Game::processEvents()
 
 void Game::update()
 {
+	static sf::Clock fpsUpdateClock;
+
+	if (fpsUpdateClock.getElapsedTime().asMilliseconds() > 200)
+	{
+		fps.setString(std::to_string(static_cast<unsigned>(1.f / dt)));
+		fpsUpdateClock.restart();
+	}
+
 	states.top()->update(dt);
 }
 
@@ -116,6 +131,7 @@ void Game::draw()
 	window.clear(sf::Color{30, 30, 30});
 
 	states.top()->draw(window);
+	window.draw(fps);
 
 	window.display();
 }

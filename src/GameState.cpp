@@ -10,16 +10,22 @@ GameState::GameState(const GameData* gameData)
 
 void GameState::processEvents(const sf::Event& event)
 {
+	static sf::Vector2i mPos;
+	static sf::Vector2f clickPos;
+
 	switch (event.type)
 	{
 	case sf::Event::MouseButtonPressed:
+		mPos = sf::Mouse::getPosition(*gameData->window);
+		clickPos = gameData->window->mapPixelToCoords(mPos, *gameData->view);
+		//Logger::logDebug("Mouse pressed at possition: [" + std::to_string(x) + ", " + std::to_string(y) + "]");
+
 		if (event.mouseButton.button == sf::Mouse::Button::Left)
-		{
-			sf::Vector2i mPos = sf::Mouse::getPosition(*gameData->window);
-			auto [x, y] = gameData->window->mapPixelToCoords(mPos, *gameData->view);
-			//Logger::logDebug("Mouse pressed at possition: [" + std::to_string(x) + ", " + std::to_string(y) + "]");
-			level.addBlock(static_cast<float>(x), static_cast<float>(y));
-		}
+			level.addBlock(clickPos.x, clickPos.y);
+		
+		if (event.mouseButton.button == sf::Mouse::Button::Right)
+			level.deleteBlock(clickPos.x, clickPos.y);
+
 		break;
 
 	default:
