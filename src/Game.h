@@ -24,7 +24,6 @@ private:
 	
 	float dt;
 
-
 	void processEvents();
 	void update();
 	void draw();

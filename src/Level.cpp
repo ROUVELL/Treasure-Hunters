@@ -32,10 +32,9 @@ void Level::loadFromFile(const char* path)
 
 void Level::addBlock(float x, float y)
 {
-	const int i = static_cast<int>(std::floor(x / 64.f));
-	const int j = static_cast<int>(std::floor(y / 64.f));
+	auto [i, j] = coordToIndex(x, y);
 
-	size_t hash = IndexToHash(i, j);
+	size_t hash = indexToHash(i, j);
 	if (blocks.contains(hash))
 		return;
 
@@ -48,22 +47,22 @@ void Level::addBlock(float x, float y)
 	blocks[hash] = sprite;
 	updateNeighbors(i, j);
 
-	Logger::logDebug("LEVEL: Block placed!  Pos: [" + std::to_string(static_cast<int>(x)) + ", " + std::to_string(static_cast<int>(y)) + "]   Index: [" + std::to_string(i) + ", " + std::to_string(j) + "]   Sum: " + std::to_string(sum) + "   Hash: " + std::to_string(hash));
+	// Logger::logDebug("LEVEL: Block placed!  Pos: [" + std::to_string(static_cast<int>(x)) + ", " + std::to_string(static_cast<int>(y)) + "]   Index: [" + std::to_string(i) + ", " + std::to_string(j) + "]   Sum: " + std::to_string(sum) + "   Hash: " + std::to_string(hash));
 }
 
 void Level::deleteBlock(float x, float y)
 {
-	const int i = static_cast<int>(std::floor(x / 64.f));
-	const int j = static_cast<int>(std::floor(y / 64.f));
+	auto [i, j] = coordToIndex(x, y);
+	size_t hash = indexToHash(i, j);
 
-	size_t hash = IndexToHash(i, j);
 	if (!blocks.contains(hash))
 		return;
 
 	blocks.erase(hash);
-	Logger::logDebug("LEVEL: Block removed!  Pos: [" + std::to_string(static_cast<int>(x)) + ", " + std::to_string(static_cast<int>(y)) + "]   Index: [" + std::to_string(i) + ", " + std::to_string(j) + "]");
 
 	updateNeighbors(i, j);
+
+	// Logger::logDebug("LEVEL: Block removed!  Pos: [" + std::to_string(static_cast<int>(x)) + ", " + std::to_string(static_cast<int>(y)) + "]   Index: [" + std::to_string(i) + ", " + std::to_string(j) + "]");
 }
 
 void Level::draw(sf::RenderWindow& window) const
@@ -118,7 +117,7 @@ unsigned Level::getSum(int i, int j) const
 		int newI = i + offsets[k][0];
 		int newJ = j + offsets[k][1];
 
-		if (!blocks.contains(IndexToHash(newI, newJ)))
+		if (!blocks.contains(indexToHash(newI, newJ)))
 			continue;
 
 		sum += (1 << k);
@@ -141,7 +140,7 @@ void Level::getNeighbors(int i, int j, std::vector<sf::Vector2i>* neighbors) con
 		int newI = i + offsets[k][0];
 		int newJ = j + offsets[k][1];
 
-		if (!blocks.contains(IndexToHash(newI, newJ)))
+		if (!blocks.contains(indexToHash(newI, newJ)))
 			continue;
 
 		neighbors->emplace_back(newI, newJ);
@@ -156,7 +155,7 @@ void Level::updateNeighbors(int i, int j)
 	for (const auto& vec : neighbors)
 	{
 		unsigned sum = getSum(vec.x, vec.y);
-		blocks[IndexToHash(vec.x, vec.y)].setTexture(getTexture(sum));
+		blocks[indexToHash(vec.x, vec.y)].setTexture(getTexture(sum));
 	}
 }
 
@@ -172,7 +171,12 @@ sf::Texture& Level::getTexture(unsigned sum)
 	return textures[sum];
 }
 
-std::size_t Level::IndexToHash(int x, int y) const noexcept
+inline std::size_t Level::indexToHash(int i, int j) const noexcept
 {
-	return (static_cast<size_t>(x) << 32) | static_cast<size_t>(y);
+	return (static_cast<size_t>(i) << 32) | static_cast<size_t>(j);
+}
+
+inline sf::Vector2i Level::coordToIndex(float x, float y) const noexcept
+{
+	return sf::Vector2i(static_cast<int>(std::floor(x / 64.f)), static_cast<int>(std::floor(y / 64.f)));
 }

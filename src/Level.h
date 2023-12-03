@@ -26,6 +26,7 @@ private:
 	void getNeighbors(int i, int j, std::vector<sf::Vector2i>* neighbors) const;
 	sf::Texture& getTexture(unsigned sum);
 
-	inline std::size_t IndexToHash(int x, int y) const noexcept;
+	inline std::size_t indexToHash(int i, int j) const noexcept;
+	inline sf::Vector2i coordToIndex(float x, float y) const noexcept;
 };
 
