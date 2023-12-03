@@ -149,6 +149,8 @@
     <None Include="res\sprites\player\animation.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\enums.h" />
+    <ClInclude Include="src\MovementComponent.h" />
     <ClInclude Include="src\GameData.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Level.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="src\State.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\MovementComponent.cpp" />
     <ClCompile Include="src\GameState.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />

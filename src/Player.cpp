@@ -4,9 +4,24 @@ Player::Player()
 {
 	animationComponent.load("player");
 	animationComponent.setSprite(&sprite);
+	animationComponent.change("idle");
+
+	movementComponent.setSprite(&sprite);
+	movementComponent.setSpeed(200.f);
+	//movementComponent.setGravity(10.f);
 
 	sprite.setScale(2.0, 2.0);
 	sprite.setPosition(200, 200);
+	auto [w, h] = sprite.getLocalBounds().getSize();
+	sprite.setOrigin(w / 2.f, h / 2.f);
+
+	shape.setSize(sprite.getLocalBounds().getSize());
+	shape.setPosition(sprite.getPosition());
+	shape.setScale(2.0, 2.0);
+	shape.setOrigin(w / 2.f, h / 2.f);
+	shape.setOutlineThickness(-0.5f);
+	shape.setOutlineColor(sf::Color::Cyan);
+	shape.setFillColor(sf::Color::Transparent);
 }
 
 void Player::processEvents(const sf::Event& event)
@@ -51,12 +66,59 @@ void Player::processEvents(const sf::Event& event)
 	}
 }
 
-void Player::update()
+void Player::movement()
 {
+	movementComponent.setDirection(Direction::NONE);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		movementComponent.setDirection(Direction::LEFT);
+		sprite.setScale(-2.0, 2.0);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		movementComponent.setDirection(Direction::RIGHT);
+		sprite.setScale(2.0, 2.0);
+	}
+}
+
+void Player::checkState()
+{
+	switch (movementComponent.getState())
+	{
+	case MovementState::IDLE:
+		animationComponent.change("idle");
+		break;
+
+	case MovementState::RUN:
+		animationComponent.change("run");
+		break;
+
+	case MovementState::JUMP:
+		animationComponent.change("jump");
+		break;
+
+	case MovementState::FALL:
+		animationComponent.change("fall");
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Player::update(float dt)
+{
+	movement();
+	movementComponent.update(dt);
+	shape.setPosition(sprite.getPosition());
+
+	checkState();
 	animationComponent.update();
 }
 
 void Player::draw(sf::RenderWindow& window) const
 {
 	window.draw(sprite);
+	window.draw(shape);
 }

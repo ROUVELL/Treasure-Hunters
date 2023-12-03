@@ -41,9 +41,9 @@ void loadSettings(const std::string& dir, nlohmann::json& json)
 }
 
 AnimationComponent::AnimationComponent()
+	: current(nullptr), sprite(nullptr)
 {
-	this->current = nullptr;
-	this->sprite = nullptr;
+
 }
 
 inline void AnimationComponent::updateTexture()
@@ -55,7 +55,7 @@ inline void AnimationComponent::updateTexture()
 	}
 }
 
-const sf::Texture& AnimationComponent::currentFrame() const
+inline const sf::Texture& AnimationComponent::currentFrame() const
 {
 	return current->frames[current->frame];
 }
@@ -111,30 +111,32 @@ void AnimationComponent::load(const std::string& dirname)
 		animation[dir] = anim;
 	}
 
-	Logger::logInfo("ANIMATION_COMPONENT: All animations using: " + std::to_string(sizeof(Animation) * count_all) + " Kb of memory!");
-
-	current = &animation["idle sword"];
+	Logger::logInfo("ANIMATION_COMPONENT: All animations using: " + std::to_string(sizeof(sf::Texture) * count_all) + " Kb of memory!");
 }
 
 void AnimationComponent::change(const std::string& name)
 {
 	if (!animation.contains(name))
 	{
-		Logger::logError("ANIMATION_COMPONENT: Animation '" + name + "' not found!");
-		exit(1);
+		Logger::logError("ANIMATION_COMPONENT: Animation '" + name + "' not found!", false);
+		return;
 	}
 
-	Logger::logDebug("ANIMATION_COMPONENT: Animation changed to '" + name + "'");
+	if (current == &animation[name])
+		return;
 
-	current->frame = 0;
+	if (current != nullptr)
+		current->frame = 0;
+
 	current = &animation[name];
 	updateTexture();
 
+	Logger::logDebug("ANIMATION_COMPONENT: Animation changed to '" + name + "'");
 }
 
 void AnimationComponent::update()
 {
-	if ((unsigned)clock.getElapsedTime().asMilliseconds() > current->time)
+	if (static_cast<unsigned>(clock.getElapsedTime().asMilliseconds()) > current->time)
 	{
 		if (++current->frame >= current->count)
 			current->frame = current->looped ? 0 : current->count - 1;

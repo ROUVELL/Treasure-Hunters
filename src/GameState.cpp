@@ -37,7 +37,7 @@ void GameState::processEvents(const sf::Event& event)
 
 void GameState::update(float dt)
 {
-	player.update();
+	player.update(dt);
 }
 
 void GameState::draw(sf::RenderWindow& window) const

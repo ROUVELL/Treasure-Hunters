@@ -152,11 +152,8 @@ void Level::updateNeighbors(int i, int j)
 	std::vector<sf::Vector2i> neighbors;
 	getNeighbors(i, j, &neighbors);
 
-	for (const auto& vec : neighbors)
-	{
-		unsigned sum = getSum(vec.x, vec.y);
-		blocks[indexToHash(vec.x, vec.y)].setTexture(getTexture(sum));
-	}
+	for (const auto& [i, j] : neighbors)
+		blocks[indexToHash(i, j)].setTexture(getTexture(getSum(i, j)));
 }
 
 sf::Texture& Level::getTexture(unsigned sum)

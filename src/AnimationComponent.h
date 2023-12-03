@@ -26,6 +26,18 @@ private:
 		std::vector<sf::Texture> frames;
 	};
 
+public:
+	AnimationComponent();
+
+	inline const sf::Texture& currentFrame() const;
+
+	void setSprite(sf::Sprite* sprite);
+
+	void load(const std::string& dirname);
+	void change(const std::string& name);
+	void update();
+
+private:
 	std::unordered_map<std::string, Animation> animation;
 	Animation* current;
 	sf::Clock clock;
@@ -33,16 +45,5 @@ private:
 	sf::Sprite* sprite;
 
 	inline void updateTexture();
-
-public:
-	AnimationComponent();
-
-	const sf::Texture& currentFrame() const;
-
-	void setSprite(sf::Sprite* sprite);
-
-	void load(const std::string& dirname);
-	void change(const std::string& name);
-	void update();
 };
 

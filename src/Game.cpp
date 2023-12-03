@@ -86,21 +86,25 @@ void Game::processEvents()
 			if (event.key.code == sf::Keyboard::Left)
 			{
 				view.move(-10.0, 0.0);
+				fps.move(-10.0, 0.0);
 				window.setView(view);
 			}
 			if (event.key.code == sf::Keyboard::Right)
 			{
 				view.move(10.0, 0.0);
+				fps.move(10.0, 0.0);
 				window.setView(view);
 			}
 			if (event.key.code == sf::Keyboard::Up)
 			{
 				view.move(0.0, -10.0);
+				fps.move(0.0, -10.0);
 				window.setView(view);
 			}
 			if (event.key.code == sf::Keyboard::Down)
 			{
 				view.move(0.0, 10.0);
+				fps.move(0.0, 10.0);
 				window.setView(view);
 			}
 			break;
